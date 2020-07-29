@@ -1,7 +1,9 @@
 package com.autoai.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -14,6 +16,8 @@ import java.io.Serializable;
 @SuppressWarnings("SerializableHasSerializationMethods")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HobbyEntity implements Serializable {
 
     private static final long serialVersionUID = -4797586556025555018L;

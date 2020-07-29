@@ -17,6 +17,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity extends SuperEntity {
 
     /**

@@ -3,7 +3,10 @@ package com.autoai.core;
 import com.autoai.entity.HobbyEntity;
 import com.autoai.entity.UserEntity;
 import com.autoai.service.ISerializer;
+import com.autoai.service.impl.HessianSerializer;
 import com.autoai.service.impl.JdkSerializer;
+import com.autoai.service.impl.JsonSerializer;
+import com.autoai.service.impl.XmlSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,9 @@ public class SerializerDomainTest {
 
     UserEntity userEntity;
     ISerializer jdkSerializer;
+    ISerializer xmlSerializer;
+    ISerializer jsonSerializer;
+    ISerializer hessianSerializer;
     File file;
 
     @Before
@@ -50,6 +56,9 @@ public class SerializerDomainTest {
         // 初始化其超类中的变量
         userEntity.setNum("1");
         jdkSerializer = new JdkSerializer();
+        xmlSerializer = new XmlSerializer();
+        jsonSerializer = new JsonSerializer();
+        hessianSerializer = new HessianSerializer();
     }
 
     /**
@@ -92,5 +101,45 @@ public class SerializerDomainTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 使用xml序列化
+     */
+    @Test
+    public void test4() {
+        byte[] bytes = xmlSerializer.serialize(userEntity);
+        UserEntity.setId("1002");
+        log.info(new String(bytes));
+        UserEntity entity = xmlSerializer.deserialize(bytes, UserEntity.class);
+        // 序列化之后更改的静态变量，也随之改变了，说明，序列化时不会序列化静态变量
+        log.info("entity:{}, id:{}, num:{}", entity.toString(), UserEntity.getId(), userEntity.getNum());
+    }
+
+    /**
+     * 使用Json序列化
+     */
+    @Test
+    public void test5() {
+        byte[] bytes = jsonSerializer.serialize(userEntity);
+        UserEntity.setId("1002");
+        log.info(new String(bytes));
+        UserEntity entity = jsonSerializer.deserialize(bytes, UserEntity.class);
+        // 序列化之后更改的静态变量，也随之改变了，说明，序列化时不会序列化静态变量
+        log.info("entity:{}, id:{}, num:{}", entity.toString(), UserEntity.getId(), userEntity.getNum());
+    }
+
+    /**
+     * 使用Hessian序列化
+     * Hessian的一个bug，对JDK1.8新增时间类型序列化 StackOverflowError
+     */
+    @Test
+    public void test6() {
+        byte[] bytes = hessianSerializer.serialize(userEntity);
+        UserEntity.setId("1002");
+        log.info(new String(bytes));
+        UserEntity entity = hessianSerializer.deserialize(bytes, UserEntity.class);
+        // 序列化之后更改的静态变量，也随之改变了，说明，序列化时不会序列化静态变量
+        log.info("entity:{}, id:{}, num:{}", entity.toString(), UserEntity.getId(), userEntity.getNum());
     }
 }
