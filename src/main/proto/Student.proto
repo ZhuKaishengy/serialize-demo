@@ -1,0 +1,10 @@
+syntax = "proto2";
+package com.autoai.value_obj;
+
+option java_package = "com.autoai.value_obj";
+option java_outer_classname = "StudentProtos";
+
+message StudentVo {
+  required string name=1;
+  required int32 age=2;
+}

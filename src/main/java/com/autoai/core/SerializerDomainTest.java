@@ -7,6 +7,8 @@ import com.autoai.service.impl.HessianSerializer;
 import com.autoai.service.impl.JdkSerializer;
 import com.autoai.service.impl.JsonSerializer;
 import com.autoai.service.impl.XmlSerializer;
+import com.autoai.value_obj.StudentProtos;
+import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ public class SerializerDomainTest {
     ISerializer xmlSerializer;
     ISerializer jsonSerializer;
     ISerializer hessianSerializer;
+    StudentProtos.StudentVo studentVo;
     File file;
 
     @Before
@@ -59,6 +62,8 @@ public class SerializerDomainTest {
         xmlSerializer = new XmlSerializer();
         jsonSerializer = new JsonSerializer();
         hessianSerializer = new HessianSerializer();
+
+        studentVo = StudentProtos.StudentVo.newBuilder().setName("zks").setAge(10).build();
     }
 
     /**
@@ -141,5 +146,13 @@ public class SerializerDomainTest {
         UserEntity entity = hessianSerializer.deserialize(bytes, UserEntity.class);
         // 序列化之后更改的静态变量，也随之改变了，说明，序列化时不会序列化静态变量
         log.info("entity:{}, id:{}, num:{}", entity.toString(), UserEntity.getId(), userEntity.getNum());
+    }
+
+    @Test
+    public void test7() throws InvalidProtocolBufferException {
+        byte[] bytes = studentVo.toByteArray();
+        log.info("getSerializedSize:{}, length:{}", studentVo.getSerializedSize(), bytes.length);
+        StudentProtos.StudentVo studentVoNew = StudentProtos.StudentVo.parseFrom(bytes);
+        log.info(studentVoNew.toString());
     }
 }
